@@ -1,6 +1,9 @@
-# CFC Glua Style Guidelines
+# Glua Style Guidelines
 
-The official CFC approved Glua styling guidelines as used on most of our repositories.
+The official SEBRP Glua styling guidelines as used on most of our repositories and other work.
+
+This if forked from CFC Servers (https://github.com/CFC-Servers)
+but edited because we want some things slightly different.
 
 # Glossary
  - [**Tooling**](#tooling)
