@@ -1,6 +1,9 @@
-# CFC Glua Style Guidelines
+# Glua Style Guidelines
 
-The official CFC approved Glua styling guidelines as used on most of our repositories.
+The official SEBRP Glua styling guidelines as used on most of our repositories and other work.
+
+This if forked from CFC Servers (https://github.com/CFC-Servers)
+but edited because we want some things slightly different.
 
 # Glossary
  - [**Tooling**](#tooling)
@@ -8,7 +11,6 @@ The official CFC approved Glua styling guidelines as used on most of our reposit
 
  - [**Spacing**](#spacing)
    - [Around operators](#spaces-around-operators)
-   - [Inside parenthesis](#spaces-inside-parentheses-and-curly-braces-if-they-contain-content)
    - [After commas](#spaces-after-commas)
    - [Indentation](#indentation-should-be-done-with-4-spaces)
    - [Inside square brackets](#no-spaces-inside-square-brackets)
@@ -24,7 +26,6 @@ The official CFC approved Glua styling guidelines as used on most of our reposit
  - [**GLua**](#gmod-lua-additions)
    - [GMod Operators](#do-not-use-gmod-operators------)
    - [GMod Comments](#do-not-use-gmod-style-comments----and--)
-   - [Continue](#the-use-of-continue-should-be-avoided-if-possible)
 
  - [**Naming**](#naming-conventions)
    - [Local variables and functions](#local-variables-and-functions-should-always-camelcase)
@@ -59,7 +60,7 @@ Use GLuaLint (GLuaFixer) as your linter. There are plugins available for most ma
 
 GLuaFixer: https://github.com/FPtje/GLuaFixer
 
-Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualint.json
+Use our GLuaFixer config, found here: https://github.com/SEBRP/glua_style_guidelines/blob/main/glualint.json
 
 ---
 
@@ -75,29 +76,16 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
   ```lua
   local x = a* b+c
   ```
-## Spaces inside parentheses and curly braces if they contain content
-
-  **Good**
-  ```lua
-  local x = ( 3 * myFunc() ) + 5
-  local data = { 5, {} }
-  ```
-
-  **Bad**
-  ```lua
-  local x = (3 * myFunc( )) + 5
-  local data = {5, { }}
-  ```
 ## Spaces after commas
 
   **Good**
   ```lua
-  myFunc( 10, { 3, 5 } )
+  myFunc(10, {3, 5})
   ```
 
   **Bad**
   ```lua
-  myFunc( 10,{ 3,5 } )
+  myFunc( 10,{ 3,5 })
   ```
 ## Indentation should be done with 4 spaces
 
@@ -303,38 +291,6 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
   */
   do( stuff ) // Stuff being done
   ```
-## The use of continue should be avoided if possible
-
-  **Good**
-  ```lua
-  for k, v in pairs( tab ) do
-      if IsValid( v ) then
-          v:Remove()
-      end
-  end
-  ```
-
-  **Bad, garry's `continue` is a flawed implementation that [is prone to errors when used in repeat-until loops](https://wiki.facepunch.com/gmod/Specific_Operators)**
-  ```lua
-  for k, v in pairs( tab ) do
-      if not IsValid( v ) then continue end
-      v:Remove()
-  end
-  ```
-  
-  If your condition is more complicated, consider deferring the logic to another function
-  ```lua
-  local function processItem( item )
-      if not IsValid( item ) then return end
-      if not item:IsReady() then return end
-      
-      item:Process()
-  end
-  
-  for _, item in ipairs( tab ) do
-      processItem( item )
-  end
-  ```
 
 ---
 
@@ -427,7 +383,7 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
   end
   ```
 ## Hook naming:
-  - Hook identifiers should be named as such `Organization_AddonName_HookPurpose`
+  - Hook identifiers should be named as such `AddonName_HookPurpose`
   - The hook event name should not be included in the identifier.
     For example, you should not do `ORG_MyAddon_OnDisconnect` or even `ORG_MyAddon_CleanupPropsOnDisconnect`. But`ORG_MyAddon_CleanupProps` would be appropriate. The "HookPurpose" should state what a function does without restating information provided by the event name.
   - Hook event names should be named as such `Organization_EventName`
@@ -440,7 +396,7 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
 
   **Good, quote usage is consistent**
   ```lua
-  myFunc( "hello ", "world!" )
+  myFunc("hello ", "world!")
   ```
 
   **Bad, different quotes are used interchangeably**
@@ -483,20 +439,17 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
   
   **Bad, this indentation is inconsistent and can make it difficult for the reader to parse**
   ```lua
-  tbl = {
-      key = x,
-      otherKey = y
-  }
+  tbl = {      key = x,
+   otherKey = y}
   ```
 
 ## Multiline function calls
 ### Multiline function calls should follow the same guidelines as Multiline tables
   **Good**
   ```lua
-  myFunc(
-      "First arg",
-      secondArg,
-      { third, arg }
+  myFunc("First arg",
+         secondArg,
+         { third, arg }
   )
   ```
   
@@ -544,6 +497,7 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
 ## Complex expressions should be written on multiple lines with meaningful variable names
 
   **Good, each step of the equation is named and done individually. The math is easy to follow**
+  **This is not necessary if the equation is good commented**
   ```lua
   local widthModifier = amount * damageMult
   local age = 1 - lifetime / duration
@@ -589,20 +543,16 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
 
   **Good, each check is clear and it's easy to follow the reasoning**
   ```lua
-  local entValid = Isvalid( ent )
-  local entOwner = ent:GetCPPIOwner()
-  local ownerVehicleIsVisible = entOwner:GetVehicle():GetColor().a > 0
-  local ownerCapable = entOwner:IsAdmin() or entOwner.canDoThing
-
-  if entValid and ownerVehicleIsVisible and ownerCapable then
-      -- doThing
+  if IsValid( ent ) 
+  and ent:GetCPPIOwner():GetVehicle():GetColor().a > 0 
+  and ( ent:GetCPPIOwner():IsAdmin() or ent:GetCPPIOwner().canDoThing ) then
+      -- do thing
   end
   ```
 
   **Bad, the conditions are difficult to follow and require some unpacking**
   ```lua
-  if IsValid( ent ) and ent:GetCPPIOwner():GetVehicle():GetColor().a > 0
-    and ( ent:GetCPPIOwner():IsAdmin() or ent:GetCPPIOwner().canDoThing ) then
+  if IsValid( ent ) and ent:GetCPPIOwner():GetVehicle():GetColor().a > 0 and ( ent:GetCPPIOwner():IsAdmin() or ent:GetCPPIOwner().canDoThing ) then
       -- do thing
   end
   ```
@@ -611,11 +561,11 @@ Use CFC's GLuaFixer config, found here: https://cfc.gg/configs/gluafixer/glualin
 
   **Good**
   ```lua
-  if IsValid( ent ) and ent:IsPlayer() and ent:IsAdmin() then
+  if IsValid(ent) and ent:IsPlayer() and ent:IsAdmin() then
       local hue = ( CurTime() * 10 ) % 360
-      local color = HSVToColor( hue, 1, 1 ) )
+      local color = HSVToColor(hue, 1, 1))
 
-      ent:SetColor( color )
+      ent:SetColor(color)
   end
   ```
 
